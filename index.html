@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiezy Score Tracker</title>
+    <link rel="icon" type="image/png" href="icon-192x192.png">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Cache control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body>
+    <div class="container">
+        <img src="icon-512x512.png" alt="Wiezy Logo" class="logo">
+        <h1>Wiezy Score Tracker</h1>
+        <div id="roundCounter" class="round-counter"></div>
+        <div class="active-game-info" id="activeGameInfo" style="display: none;">
+            <span class="game-type" id="activeGameType"></span>
+            <div class="active-players" id="activePlayers"></div>
+        </div>
+        <h2 class="subtitle" id="subtitle">Voer spelersnamen in</h2>
+        
+        <!-- Player Setup Form -->
+        <div id="setupForm">
+            <div class="player-inputs">
+                <div class="input-container">
+                    <input type="text" placeholder="Speler 1">
+                    <div class="input-error">Deze naam is niet uniek!</div>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Speler 2">
+                    <div class="input-error">Deze naam is niet uniek!</div>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Speler 3">
+                    <div class="input-error">Deze naam is niet uniek!</div>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Speler 4">
+                    <div class="input-error">Deze naam is niet uniek!</div>
+                </div>
+            </div>
+            <button class="btn" onclick="startGame()">Start Spel</button>
+        </div>
+
+        <!-- Score Board (initially hidden) -->
+        <div id="scoreBoard" style="display: none;">
+            <div id="scores"></div>
+            <div id="gameTypeSelection" style="display: none;">
+                <h2>Selecteer het type spel</h2>
+                <button class="btn" onclick="selectGameType('regular')">Vragen en alleen gaan</button>
+                <button class="btn" onclick="selectGameType('miserie')">Miserie</button>
+                <button class="btn" onclick="selectGameType('openMiserie')">Miserie op tafel</button>
+            </div>
+            
+            <!-- Add End Game button that's initially hidden -->
+            <div id="endGameSection" style="display: none;" class="end-game-section">
+                <button class="btn secondary" onclick="endGame()">Spel Beëindigen</button>
+            </div>
+
+            <div id="gameOptionsSelection" class="game-selection">
+                <h3>Kies een game type</h3>
+                <div class="game-options">
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('vragen-alleen')">Vragen en alleen gaan</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('vragen')">Vragen met meerdere spelers</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('troel')">Troel</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('troela')">Troela</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('abondance-9')">Abondance 9</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('abondance-10')">Abondance 10</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('abondance-11')">Abondance 11</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('abondance-12')">Abondance 12</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('miserie')">Miserie</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('miserie-op-tafel')">Miserie op tafel</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('solo')">Solo</div>
+                    </div>
+                    <div class="game-option-container">
+                        <div class="game-option" onclick="selectGame('solo-slim')">Solo Slim</div>
+                    </div>
+                </div>
+                <!-- Player choices container moved outside of specific game options -->
+                <div class="player-choices-container">
+                    <div id="errorMessage" class="error-message"></div>
+                    <div id="playerChoices"></div>
+                    <button class="btn" onclick="startRound()">Start Ronde</button>
+                </div>
+            </div>
+
+            <!-- Add end game button container -->
+            <div id="endGameButtonContainer" style="display: none;" class="end-game-button-container">
+                <button class="btn secondary" onclick="endGame()">Beëindig spel</button>
+            </div>
+
+            <!-- Scoring UI (initially hidden) -->
+            <div id="scoringUI" style="display: none;">
+                <h3>Score Invoer</h3>
+                <!-- Regular game scoring (for non-miserie games) -->
+                <div id="regularScoring" style="display: none;">
+                    <div class="scoring-input">
+                        <label>Aantal behaalde slagen:</label>
+                        <input type="number" id="slagenInput" min="0" max="13">
+                    </div>
+                    <button class="btn primary" onclick="submitRegularScore()">Score Bevestigen</button>
+                    <button class="btn secondary" onclick="cancelScoring()">Annuleren</button>
+                </div>
+                <!-- Miserie game scoring -->
+                <div id="miserieScoring" style="display: none;">
+                    <div id="miseriePlayerResults"></div>
+                    <button class="btn primary" onclick="submitMiserieScore()">Score Bevestigen</button>
+                    <button class="btn secondary" onclick="cancelScoring()">Annuleren</button>
+                </div>
+            </div>
+
+            <!-- Round Results (initially hidden) -->
+            <div id="roundResults" style="display: none;">
+                <h3>Ronde Resultaat</h3>
+                <div id="scoreResults"></div>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="rules-section">
+            <div class="rules-header" onclick="toggleRules()">
+                <h2>Game info 🎴</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="rules-content" id="rulesContent">
+                <ul>
+                    <li><strong>Vragen en alleen gaan:</strong> Als een speler vraagt en niemand gaat mee, mag hij alleen gaan voor vijf slagen bij gewoon wiezen of zes bij kleurenwiezen.</li>
+                    <li><strong>Vragen en meegaan:</strong> Een speler "vraagt" als hij van oordeel is dat hij, met hulp van een partner, acht slagen kan halen. Zelf staat hij borg voor minstens vijf (zes bij kleurenwiezen) slagen. Een speler die van oordeel is dat hij samen met de vrager het verplicht aantal slagen kan maken, waarbij hij zich borg stelt voor minstens drie slagen (twee bij kleurenwiezen) "gaat mee". Er wordt samen gewonnen of verloren. Er bestaat geen verplichting om "mee te gaan".</li>
+                    <li><strong>Abondance (9, 10, 11, 12):</strong> (van het Frans: overvloed, veelheid) De speler speelt alleen tegen de drie andere spelers en moet minstens negen, tien, elf of twaalf slagen halen, de troef is de keuze van de bieder.</li>
+                    <li><strong>Troel:</strong> De speler die drie azen in zijn hand heeft, dient verplicht "troel" aan te kondigen. De speler met de vierde aas komt die uit en deze soort is dan troef.</li>
+                    <li><strong>Troela:</strong> Indien een speler de vier azen in zijn hand houdt, wordt de speler die hartenkoning in zijn bezit heeft, zijn verplichte partner. Samen dienen ze negen slagen te halen. Indien de speler met de vier azen zelf ook nog hartenkoning in bezit heeft, is de verplichte partner die met hartendame. Enzovoerder tot alle harten zijn afgelopen.</li>
+                    <li><strong>Solo:</strong> De speler moet alle slagen halen in een troef naar eigen keuze (dit mag ook in de oorspronkelijk gedraaide troef zijn) Hij mag zelfuitspelen.</li>
+                    <li><strong>Solo slim:</strong> Dit is het hoogste spel. De speler moet alle slagen halen in de gedraaide troef en de speler links van de deler mag uitspelen. In het kleurenwiezen dient hij alle slagen te halen zonder dat er een kleur troef wordt gemaakt.</li>
+                    <li><strong>Miserie:</strong> De speler beslists om geen enkele slag te halen. In dit spel is er geen troef. Indien iemand miserie speelt, mogen de andere spelers ook miserie spelen. Indien drie van de vier spelers miserie spelen, is de vierde speler verplicht dit ook te doen.</li>
+                    <li><strong>Miserie op tafel:</strong> De speler beslists om geen enkele slag te halen terwijl de overige drie spelers zijn kaarten mogen zien. Hij legt zijn kaarten open op tafel na de eerste ronde, de tegenspelers mogen echter géén overleg plegen. Ook hier is er geen troef.</li>
+                    <li><strong>Passen:</strong> De speler wenst geen enkel initiatief te nemen om gelijk welk spelsoort te kiezen. Als alle vier de personen passen, wordt er opnieuw gedeeld.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script src="scoring.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

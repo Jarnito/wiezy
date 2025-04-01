@@ -6,10 +6,14 @@
     <title>Wiezy Score Tracker</title>
     <link rel="icon" type="image/png" href="icon-192x192.png">
     <link rel="stylesheet" href="styles.css">
-    <!-- Cache control -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7328a8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Wiezy">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body>
     <div class="container">
@@ -110,7 +114,7 @@
 
             <!-- Add end game button container -->
             <div id="endGameButtonContainer" style="display: none;" class="end-game-button-container">
-                <button class="btn secondary" onclick="endGame()">Beëindig spel</button>
+                <button class="btn secondary" onclick="endGame()">Spel Beëindigen</button>
             </div>
 
             <!-- Scoring UI (initially hidden) -->
@@ -166,5 +170,20 @@
     <script src="game.js"></script>
     <script src="scoring.js"></script>
     <script src="app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/wiezy/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 </html> 
